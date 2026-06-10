@@ -1,0 +1,14 @@
+{
+  "name": "knowledge-transfer",
+  "description": "Project handover skill for Claude Code: onboarding doc + the AI's verified memories, packaged in the repo.",
+  "owner": { "name": "Ferdinando Bonsegna" },
+  "plugins": [
+    {
+      "name": "knowledge-transfer",
+      "source": "./",
+      "description": "AI-powered project handover for Claude Code: export a short non-technical onboarding doc plus the AI's privacy-filtered memories into the repo; the next developer imports them, verified against the current code. Onboarding that survives people leaving.",
+      "version": "0.1.0",
+      "license": "MIT"
+    }
+  ]
+}

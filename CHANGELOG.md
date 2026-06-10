@@ -11,3 +11,9 @@ All notable changes to this project are documented here. Format follows
   current code, memory installation, onboarding presentation).
 - Reference contracts: package format, privacy filter, onboarding template.
 - Fixture project and documented end-to-end test scenarios.
+- Claude Code native plugin install: `.claude-plugin/` manifests
+  (`/plugin marketplace add ferdinandobons/knowledge-transfer`).
+
+### Changed
+- README rewritten: value proposition, core guarantee, at-a-glance table,
+  Claude-native install commands first.
