@@ -4,7 +4,7 @@
 
 **Project handover for Claude Code and Codex.**
 
-Export onboarding docs and privacy-filtered AI memories as a zip; verify them on import.
+Export a short onboarding guide and privacy-filtered AI memories as a zip; import only memories verified against the current code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3B82F6.svg)](LICENSE)
 [![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20%2B%20Codex-D97757.svg)](https://claude.com/claude-code)
