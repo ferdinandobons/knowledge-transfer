@@ -1,4 +1,4 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="430" viewBox="0 0 1700 430" role="img" aria-labelledby="title desc">
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="330" viewBox="0 50 1700 330" role="img" aria-labelledby="title desc">
   <title id="title">knowledge-transfer handover flow</title>
   <desc id="desc">Outgoing developer runs knowledge-transfer export, creates handover.zip, gives it to the new developer, who runs knowledge-transfer import. Import shows ONBOARDING.md and imports verified memories.</desc>
   <defs>
