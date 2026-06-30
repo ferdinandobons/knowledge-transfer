@@ -1,7 +1,7 @@
 {
   "name": "knowledge-transfer",
-  "description": "AI-powered project handover for Claude Code and Codex: when a developer leaves a project, export a 1-2 page non-technical onboarding doc plus the AI's accumulated project memories (privacy-filtered, neutral voice) into handover.zip. The next developer imports them: every memory is verified against the current code before their AI learns it.",
-  "version": "0.1.0",
+  "description": "AI-powered project handover for Claude Code and Codex: export a short onboarding doc plus privacy-filtered AI project memories into handover.zip with safe omission accounting. The next developer dry-runs import, verifies each claim against current code, and writes accepted memories with per-memory receipts.",
+  "version": "0.2.0",
   "author": { "name": "Ferdinando Bonsegna" },
   "license": "MIT",
   "keywords": ["knowledge-transfer", "handover", "onboarding", "offboarding", "project-handover", "developer-experience", "team-knowledge", "ai-memory", "memory-transfer", "documentation", "claude", "claude-code", "claude-skill", "codex", "openai", "anthropic", "ai-agents", "agent-skill"]

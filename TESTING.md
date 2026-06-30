@@ -12,6 +12,8 @@ Run these before publishing install-command changes:
 ```bash
 python3 ~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py plugins/knowledge-transfer
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py plugins/knowledge-transfer/skills/knowledge-transfer
+claude plugin validate .
+claude plugin validate plugins/knowledge-transfer
 cmp SKILL.md plugins/knowledge-transfer/skills/knowledge-transfer/SKILL.md
 cmp agents/openai.yaml plugins/knowledge-transfer/skills/knowledge-transfer/agents/openai.yaml
 diff -qr references plugins/knowledge-transfer/skills/knowledge-transfer/references
@@ -24,8 +26,8 @@ cache, not just the source tree:
 tmpdir="$(mktemp -d)"
 CODEX_HOME="$tmpdir" codex plugin marketplace add ferdinandobons/knowledge-transfer --ref main
 CODEX_HOME="$tmpdir" codex plugin add knowledge-transfer@knowledge-transfer
-python3 ~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py "$tmpdir/plugins/cache/knowledge-transfer/knowledge-transfer/0.1.0"
-python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$tmpdir/plugins/cache/knowledge-transfer/knowledge-transfer/0.1.0/skills/knowledge-transfer"
+python3 ~/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py "$tmpdir/plugins/cache/knowledge-transfer/knowledge-transfer/0.2.0"
+python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$tmpdir/plugins/cache/knowledge-transfer/knowledge-transfer/0.2.0/skills/knowledge-transfer"
 ```
 
 ## Scenario A — export
@@ -39,11 +41,15 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$tmpdir
    - Personal memories are absent from `handover/memories/`.
    - `grep -Eri "<known-name>|<known-email>|<known-username>" handover/` → zero hits.
    - `ONBOARDING.md` is 600–1000 words (`wc -w`) and has the six template sections.
+   - `omissions.json` parses, contains only safe categories/counts, and contains
+     no private source text.
    - `manifest.json` parses and its memory counts match the actual files.
+   - Each exported memory has `metadata.source_id`, `metadata.source_hash`,
+     `metadata.redactions`, and at least one verifiable `metadata.claims` entry.
    - Every path cited in exported memories exists under the project root.
    - `python3 -m zipfile -t handover.zip` succeeds.
    - `python3 -m zipfile -l handover.zip` lists `handover/ONBOARDING.md`,
-     `handover/manifest.json`, and every memory file.
+     `handover/manifest.json`, `handover/omissions.json`, and every memory file.
 
 ## Scenario B — import
 
@@ -51,18 +57,27 @@ python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py "$tmpdir
 2. Treat the project with the generated `handover.zip` as the freshly cloned
    project root and the scratch directory as YOUR memory directory (tell the
    agent this explicitly if the environment allows overriding memory paths).
-3. Run the import phase of `SKILL.md` end to end.
+3. Run `import --dry-run` first.
 4. Assert:
+   - `handover/import-plan.json` exists before any memory writes.
+   - The plan lists every candidate memory with source id/hash, claims, checked
+     evidence, proposed action, reason, and destination.
+   - No accepted memory has been written during `--dry-run`.
+5. Run the import phase with confirmation (or `import --yes`) end to end.
+6. Assert:
    - The accepted portable memories are installed in the scratch directory, valid
      frontmatter intact, or surfaced through the approved memory-update artifact.
    - When direct memory writes are allowed, `MEMORY.md` was created there with
      one index line per memory.
-   - The report counts installed / updated / discarded memories and gives one
-     reason for each non-installed memory.
+   - `handover/import-report.json` exists and counts installed / rewritten /
+     rejected / blocked memories.
+   - `handover/import-receipts/` contains one receipt per candidate memory with
+     source id/hash, claims, checked evidence, destination, final action, and
+     reason.
    - In Codex, if direct memory writes are restricted by the active memory policy,
      the accepted memories are written or presented through the approved
      memory-update artifact instead of editing generated indexes directly.
-5. Remove the scratch directory.
+7. Remove the scratch directory.
 
 ## Staleness spot-check (optional)
 

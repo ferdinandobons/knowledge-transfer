@@ -33,3 +33,13 @@ install project knowledge, but the agent may still require a specific update pat
 Never bypass a policy that says memory writes are restricted. If direct installation
 is blocked, report the accepted memories and the exact reason installation was not
 performed.
+
+Before writing, always complete the dry-run import plan described in
+`package-format.md`. After each candidate memory is handled, write a receipt whose
+`destination` field names the actual storage path, approved memory-update
+mechanism, or blocked reason. Examples:
+
+- `claude-project-memory:<path>`
+- `codex-ad-hoc-memory-note:<path>`
+- `presented-only:memory-policy-blocked`
+- `rejected:stale-no-evidence`

@@ -20,6 +20,11 @@ All notable changes to this project are documented here. Format follows
   (`/plugin marketplace add ferdinandobons/knowledge-transfer`).
 - Transfer archive workflow: export creates `handover.zip` containing the
   generated `handover/` folder.
+- Package format v2 with `omissions.json`, per-memory source hashes,
+  redaction metadata, and verifiable claims.
+- Import dry-run plan (`import-plan.json`) before writing memories.
+- Per-memory import receipts and final import report for installed, rewritten,
+  rejected, or blocked memories.
 
 ### Changed
 - README rewritten: value proposition, core guarantee, at-a-glance table,
@@ -28,3 +33,7 @@ All notable changes to this project are documented here. Format follows
   while preserving the existing `handover/` package format.
 - Handover delivery changed from repo-commit guidance to a transferable zip
   archive passed to the next colleague.
+- Import flow now requires a dry-run/confirmation step by default and supports
+  `import --dry-run` plus explicit `import --yes`.
+- Plugin manifests now report `0.2.0` so marketplace installs can discover the
+  dry-run/receipt update.

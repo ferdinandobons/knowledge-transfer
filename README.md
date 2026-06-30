@@ -4,7 +4,7 @@
 
 **Project handover for Claude Code and Codex.**
 
-Export a short onboarding guide and privacy-filtered AI memories as a zip; import only memories verified against the current code.
+Export a guide and privacy-filtered AI memories as a zip; dry-run import, then keep only verified memories.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3B82F6.svg)](LICENSE)
 [![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20%2B%20Codex-D97757.svg)](https://claude.com/claude-code)
@@ -34,7 +34,7 @@ import.
 | Phase | Who runs it | What happens |
 |---|---|---|
 | `export` | The colleague leaving | Analyzes the project, reads project-scoped memories, filters private content, writes `handover/` and `handover.zip`. |
-| `import` | The colleague joining | Reads the onboarding doc, verifies each memory against the current code, installs only the valid project knowledge. |
+| `import` | The colleague joining | Shows the onboarding doc, dry-runs candidate memories, verifies each claim against the current code, then installs only approved project knowledge. |
 
 Run without arguments, the skill detects the phase:
 
@@ -58,6 +58,7 @@ Plugin-installed skills are namespaced:
 ```text
 /knowledge-transfer:knowledge-transfer export
 /knowledge-transfer:knowledge-transfer import
+/knowledge-transfer:knowledge-transfer import --dry-run
 ```
 
 ### Codex
@@ -74,6 +75,7 @@ Start a new Codex thread, then invoke the plugin:
 ```text
 @knowledge-transfer export
 @knowledge-transfer import
+@knowledge-transfer import --dry-run
 ```
 
 ### Raw Skill
@@ -113,9 +115,10 @@ In Codex:
 @knowledge-transfer import
 ```
 
-Read the onboarding doc first. The accepted memories are then installed through
-the current agent's memory mechanism; stale memories are fixed when obvious or
-discarded with a reason.
+Read the onboarding doc first. Import then shows a dry-run plan with candidate
+memories, checked evidence, proposed actions, and reasons. Confirm the plan to
+write accepted memories through the current agent's memory mechanism; stale
+memories are fixed when obvious or rejected with a receipt.
 
 ## What Gets Created
 
@@ -124,15 +127,26 @@ handover.zip              # transfer this file
 handover/                 # local staging folder used to build the zip
   ONBOARDING.md     # 600-1000 words, non-technical project map
   memories/         # neutral, portable project memories
+  omissions.json    # safe counts/categories for omitted private memories
   manifest.json     # export date, commit SHA, exported/excluded counts
 ```
 
 | File | Purpose |
 |---|---|
 | `ONBOARDING.md` | A first-read project map: what it is, main pieces, key flows, where to start, gotchas. |
-| `memories/*.md` | Project facts, conventions, decisions, fragile flows, and commands worth preserving. |
+| `memories/*.md` | Project facts, conventions, decisions, fragile flows, and commands worth preserving, with source hashes and verifiable claims. |
+| `omissions.json` | Privacy-safe omission counts/categories, so the next developer knows gaps exist without seeing private content. |
 | `manifest.json` | Package version, export commit, language, and privacy-filter accounting. |
 | `handover.zip` | The transfer artifact to pass to the next person. It contains the full `handover/` folder. |
+
+Import also creates local audit files next to the extracted package:
+
+```text
+handover/
+  import-plan.json      # dry-run plan before memory writes
+  import-report.json    # final import counts
+  import-receipts/      # one receipt per installed/rejected/blocked memory
+```
 
 ## Guarantees
 
@@ -141,7 +155,9 @@ handover/                 # local staging folder used to build the zip
 | No personal memory export | `type: user` memories are never written to the package. |
 | Neutral project voice | Exported memories are rewritten without names, emails, usernames, or personal framing. |
 | Transferable handoff | The output is a zip archive containing plain Markdown/JSON. |
-| Verified import | Every cited file, path, or identifier is checked against the current repo before installation. |
+| Dry-run before writes | Import shows candidate memories, evidence, action, and reason before writing. |
+| Verified import | Every claim, cited file, path, or identifier is checked against the current repo before installation. |
+| Import receipts | Every accepted, rewritten, rejected, or blocked memory gets a local receipt. |
 | No blind overwrite | Existing memories are not overwritten silently on import. |
 
 ## What Are AI Memories?

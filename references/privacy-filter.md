@@ -34,6 +34,32 @@ personal profile/preferences behave like `user`; durable repo facts behave like
 
 ## Accounting
 
-Count every exclusion. The export reports `exported` and `excluded` totals in
-`manifest.json` and tells the user which memories were excluded and why (one line
-each) — that summary stays in the conversation, NOT in the package.
+Count every exclusion and redaction.
+
+The export reports `exported` and `excluded` totals in `manifest.json`. It also
+writes `handover/omissions.json` with safe categories and counts, so the next
+developer can see that gaps exist without receiving the private content that
+caused the gap.
+
+For exported memories, provenance hashes must be computed only after private
+values have been removed or replaced. Do not include hashes for omitted memories,
+secret-bearing memories, or any source text that the package is not allowed to
+reveal.
+
+`omissions.json` may include:
+
+- category names from `package-format.md`;
+- counts;
+- generic reasons.
+
+`omissions.json` must NOT include:
+
+- original memory text;
+- names, emails, usernames, or personal identifiers;
+- secrets or token fragments;
+- private URLs, private hostnames, or personal dashboard names;
+- machine-specific paths outside the repo;
+- detailed reasons that would let the reader infer the omitted content.
+
+Tell the exporting user which memories were excluded and why in the conversation
+if useful, but keep the package itself privacy-safe.

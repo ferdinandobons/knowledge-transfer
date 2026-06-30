@@ -1,7 +1,7 @@
 {
   "name": "knowledge-transfer",
-  "version": "0.1.0",
-  "description": "AI-powered project handover for Claude Code and Codex: export a short onboarding doc plus privacy-filtered project memories into handover.zip, then verify and import them for the next developer.",
+  "version": "0.2.0",
+  "description": "AI-powered project handover for Claude Code and Codex: export onboarding docs plus privacy-filtered project memories into handover.zip, then dry-run, verify, and import accepted memories with receipts.",
   "author": {
     "name": "Ferdinando Bonsegna",
     "url": "https://github.com/ferdinandobons"
@@ -29,15 +29,15 @@
   "skills": "./skills/",
   "interface": {
     "displayName": "Knowledge Transfer",
-    "shortDescription": "Project handover with verified AI memories",
-    "longDescription": "Export a short onboarding document plus privacy-filtered project memories into handover.zip. Import verifies each memory against current code before the next developer's AI learns it.",
+    "shortDescription": "Project handover with dry-run verified AI memories",
+    "longDescription": "Export a short onboarding document plus privacy-filtered project memories into handover.zip with safe omission accounting. Import dry-runs candidate memories, verifies each claim against current code, then writes accepted memories with per-memory receipts.",
     "developerName": "Ferdinando Bonsegna",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],
     "websiteURL": "https://github.com/ferdinandobons/knowledge-transfer",
     "defaultPrompt": [
       "Use $knowledge-transfer to export a handover package.",
-      "Use $knowledge-transfer to import verified project memories."
+      "Use $knowledge-transfer to dry-run and import verified project memories."
     ],
     "brandColor": "#3B82F6"
   }
