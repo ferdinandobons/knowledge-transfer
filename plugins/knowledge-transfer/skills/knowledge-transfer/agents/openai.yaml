@@ -1,0 +1,6 @@
+interface:
+  display_name: "Knowledge Transfer"
+  short_description: "Project handover with verified AI memories"
+  default_prompt: "Use $knowledge-transfer to export or import a project handover package with verified portable memories."
+policy:
+  allow_implicit_invocation: true

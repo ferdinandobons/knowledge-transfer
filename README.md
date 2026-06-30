@@ -152,8 +152,10 @@ versioned (`manifest.version`), so future changes stay backward compatible.
 Claude Code uses `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
 Codex uses `.agents/plugins/marketplace.json` for `codex plugin marketplace add`,
 `plugins/knowledge-transfer` as the marketplace plugin path,
-`.codex-plugin/plugin.json` for plugin packaging, and `agents/openai.yaml` for
-skill UI metadata.
+`plugins/knowledge-transfer/.codex-plugin/plugin.json` for plugin packaging, and
+`plugins/knowledge-transfer/skills/knowledge-transfer/agents/openai.yaml` for
+skill UI metadata. The Codex plugin directory intentionally contains real files,
+not symlinks, so the installed plugin cache is self-contained.
 
 ## License
 

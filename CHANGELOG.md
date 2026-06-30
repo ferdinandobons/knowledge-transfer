@@ -12,7 +12,7 @@ All notable changes to this project are documented here. Format follows
 - Reference contracts: package format, privacy filter, onboarding template.
 - Agent memory handling contract for Claude Code, Codex, and other agents.
 - Codex `agents/openai.yaml` metadata.
-- Codex `.codex-plugin/plugin.json` manifest for plugin packaging.
+- Codex plugin manifest under `plugins/knowledge-transfer/.codex-plugin/plugin.json`.
 - Codex `.agents/plugins/marketplace.json` and `plugins/knowledge-transfer`
   marketplace path for `codex plugin marketplace add`.
 - Documented manual end-to-end test scenarios.
