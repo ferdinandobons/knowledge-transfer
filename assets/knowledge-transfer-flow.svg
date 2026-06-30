@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1700" height="430" viewBox="0 0 1700 430" role="img" aria-labelledby="title desc">
+  <title id="title">knowledge-transfer handover flow</title>
+  <desc id="desc">Outgoing developer runs knowledge-transfer export, creates handover.zip, gives it to the new developer, who runs knowledge-transfer import. Import shows ONBOARDING.md and imports verified memories.</desc>
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="8" markerHeight="8" orient="auto-start-reverse">
+      <path d="M0 0 L10 5 L0 10 Z" fill="#374151"/>
+    </marker>
+    <style>
+      .bg { fill: #ffffff; }
+      .person { fill: #f3f0ff; stroke: #9b7cff; stroke-width: 2.2; }
+      .cmd { fill: #eef6ff; stroke: #3b82f6; stroke-width: 2.2; }
+      .zip { fill: #ecfdf5; stroke: #16a34a; stroke-width: 2.5; }
+      .human { fill: #fff7ed; stroke: #f97316; stroke-width: 2.2; }
+      .memory { fill: #fff7ed; stroke: #f97316; stroke-width: 2.2; }
+      .label { fill: #1f2937; font-family: "Trebuchet MS", Verdana, Arial, sans-serif; font-size: 22px; font-weight: 700; text-anchor: middle; dominant-baseline: middle; }
+      .small { fill: #4b5563; font-family: "Trebuchet MS", Verdana, Arial, sans-serif; font-size: 16px; font-weight: 600; text-anchor: middle; dominant-baseline: middle; }
+      .edge { stroke: #374151; stroke-width: 2.4; fill: none; marker-end: url(#arrow); }
+      .soft { stroke: #6b7280; stroke-width: 2.1; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <rect class="bg" width="1700" height="430"/>
+
+  <path class="edge" d="M250 215 H315"/>
+  <path class="edge" d="M505 215 H575"/>
+  <path class="edge" d="M755 215 H825"/>
+  <path class="edge" d="M1055 215 H1125"/>
+  <path class="soft" d="M1335 215 C1390 215 1395 122 1450 122"/>
+  <path class="soft" d="M1335 215 C1390 215 1395 308 1450 308"/>
+
+  <rect class="person" x="40" y="167" width="210" height="96" rx="8"/>
+  <text class="label" x="145" y="204">Outgoing</text>
+  <text class="label" x="145" y="234">developer</text>
+
+  <rect class="cmd" x="315" y="167" width="190" height="96" rx="8"/>
+  <text class="label" x="410" y="201">knowledge-</text>
+  <text class="label" x="410" y="229">transfer export</text>
+
+  <rect class="zip" x="575" y="167" width="180" height="96" rx="8"/>
+  <text class="label" x="665" y="204">handover.zip</text>
+  <text class="small" x="665" y="234">transfer file</text>
+
+  <rect class="person" x="825" y="167" width="230" height="96" rx="8"/>
+  <text class="label" x="940" y="204">New</text>
+  <text class="label" x="940" y="234">developer</text>
+
+  <rect class="cmd" x="1125" y="167" width="210" height="96" rx="8"/>
+  <text class="label" x="1230" y="201">knowledge-</text>
+  <text class="label" x="1230" y="229">transfer import</text>
+
+  <rect class="human" x="1450" y="74" width="210" height="96" rx="8"/>
+  <text class="label" x="1555" y="111">Shows</text>
+  <text class="small" x="1555" y="141">ONBOARDING.md</text>
+
+  <rect class="memory" x="1450" y="260" width="210" height="96" rx="8"/>
+  <text class="label" x="1555" y="297">Imports</text>
+  <text class="small" x="1555" y="327">verified memories</text>
+</svg>

@@ -1,12 +1,12 @@
 {
   "name": "knowledge-transfer",
-  "description": "Project handover skill for Claude Code and Codex: onboarding doc + the AI's verified memories, packaged in the repo.",
+  "description": "Project handover skill for Claude Code and Codex: onboarding doc + the AI's verified memories, packaged as handover.zip.",
   "owner": { "name": "Ferdinando Bonsegna" },
   "plugins": [
     {
       "name": "knowledge-transfer",
       "source": "./",
-      "description": "AI-powered project handover for Claude Code and Codex: export a short non-technical onboarding doc plus the AI's privacy-filtered project memories into the repo; the next developer imports them, verified against the current code. Onboarding that survives people leaving.",
+      "description": "AI-powered project handover for Claude Code and Codex: export a short non-technical onboarding doc plus the AI's privacy-filtered project memories into handover.zip; the next developer imports them, verified against the current code.",
       "version": "0.1.0",
       "license": "MIT"
     }

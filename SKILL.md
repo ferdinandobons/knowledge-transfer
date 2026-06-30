@@ -1,13 +1,14 @@
 ---
 name: knowledge-transfer
-description: "Use when a colleague is leaving a project and must hand over knowledge, or when someone new joins a project that contains a handover/ folder. Two phases: export (analyze project + agent project memories from Claude, Codex, or another assistant, then produce a committed handover package: non-technical onboarding doc + filtered portable memories) and import (verify those memories against current code, then install them through the current agent's memory mechanism). Trigger on /knowledge-transfer, /knowledge-transfer:knowledge-transfer, $knowledge-transfer, 'handover', 'knowledge transfer', 'passaggio di consegne', 'onboard a new colleague', or when the user mentions taking over / leaving a project."
+description: "Use when a colleague is leaving a project and must hand over knowledge, or when someone new joins a project and receives handover.zip or a handover/ folder. Two phases: export (analyze project + agent project memories from Claude, Codex, or another assistant, then produce a transferable handover.zip archive containing a non-technical onboarding doc + filtered portable memories) and import (extract/read the handover package, verify memories against current code, then install them through the current agent's memory mechanism). Trigger on /knowledge-transfer, /knowledge-transfer:knowledge-transfer, $knowledge-transfer, 'handover', 'knowledge transfer', 'passaggio di consegne', 'onboard a new colleague', or when the user mentions taking over / leaving a project."
 ---
 
 # knowledge-transfer
 
 Transfer project knowledge between colleagues: a short non-technical onboarding
-document plus the AI's accumulated project memories, packaged inside the project
-repo so the newcomer starts oriented and their AI starts informed.
+document plus the AI's accumulated project memories, packaged as a local
+`handover.zip` archive so the newcomer starts oriented and their AI starts
+informed.
 
 ## Usage
 
@@ -15,7 +16,7 @@ Claude Code standalone skill:
 
 ```
 /knowledge-transfer            # auto-detect mode (see below)
-/knowledge-transfer export     # outgoing colleague: build the handover package
+/knowledge-transfer export     # outgoing colleague: build handover.zip
 /knowledge-transfer import     # new colleague: verify + install memories, read the doc
 ```
 
@@ -37,7 +38,7 @@ $knowledge-transfer import     # new colleague
 
 ## Mode detection (no argument)
 
-1. If `handover/manifest.json` exists in the project root → announce import mode.
+1. If `handover/manifest.json` or `handover.zip` exists in the project root → announce import mode.
 2. Otherwise → announce export mode.
 
 State the detected mode in one line and proceed. The user can override at any time.
@@ -84,14 +85,19 @@ Run from the project root by the colleague leaving the project.
 Apply `references/privacy-filter.md` strictly to every memory. Produce the portable
 versions (rewritten, neutral) and the per-memory exclusion list with reasons.
 
-### 4. Write the package
+### 4. Write the package and archive
 
-- If `handover/` already exists, STOP and ask before overwriting.
+- If `handover/` or `handover.zip` already exists, STOP and ask before overwriting.
 - Write `handover/ONBOARDING.md` following `references/onboarding-template.md`.
 - Write each surviving memory to `handover/memories/<slug>.md` in the portable
   format.
 - Write `handover/manifest.json` per the schema (commit SHA from `git rev-parse
   HEAD`; omit `commit` if not a git repo, omit `author` if git config has no name).
+- Create `handover.zip` in the project root containing the full `handover/`
+  folder. Prefer `python3 -m zipfile -c handover.zip handover`; if unavailable,
+  use an equivalent zip command that preserves the top-level `handover/` directory.
+- Do not commit `handover/` or `handover.zip` unless the user explicitly asks.
+  The normal workflow is to pass `handover.zip` to the next colleague.
 
 ### 5. Final checklist — verify before declaring done
 
@@ -102,22 +108,31 @@ versions (rewritten, neutral) and the per-memory exclusion list with reasons.
       sections.
 - [ ] Every file/path cited in an exported memory exists in the project.
 - [ ] `manifest.json` parses and counts match the actual files.
+- [ ] `handover.zip` exists, passes `python3 -m zipfile -t handover.zip`, and
+      contains `handover/ONBOARDING.md`, `handover/manifest.json`, and every
+      memory file.
 
 Report to the user: package contents, exclusion list with reasons, and suggest
-committing `handover/` to the repo. Do not commit without asking.
+passing `handover.zip` to the next colleague. Do not commit the package unless the
+user explicitly asks.
 
 ---
 
 ## Import phase
 
-Run by the new colleague, from the project root, after cloning.
+Run by the new colleague, from the project root, after receiving `handover.zip`
+or an already extracted `handover/` folder.
 
 ### 1. Read the package
 
+- If `handover.zip` exists and `handover/` is absent, inspect the archive first:
+  every entry must start with `handover/`, and no entry may be absolute or contain
+  `..`. Then extract it into the project root, for example with
+  `python3 -m zipfile -e handover.zip .`.
 - Read `handover/manifest.json`, `handover/ONBOARDING.md`, and every file in
   `handover/memories/`.
-- `handover/` missing → stop: explain that the outgoing colleague must run
-  `/knowledge-transfer export` first, then commit the result.
+- `handover/` and `handover.zip` both missing → stop: explain that the outgoing
+  colleague must run `/knowledge-transfer export` first, then send `handover.zip`.
 - `manifest.version` unknown → stop and say the skill is too old for this package.
 
 ### 2. Verify each memory against the current code
@@ -160,6 +175,8 @@ Present to the user, in this order:
 | No memories at export | Document-only package; say so explicitly. |
 | Project is not a git repo | Manifest without `commit`; import verification falls back to existence checks only. |
 | `handover/` exists at export | Ask before overwriting. |
-| `handover/` missing at import | Stop with instructions for the outgoing colleague. |
+| `handover.zip` exists at export | Ask before overwriting. |
+| `handover.zip` present at import | Validate archive paths, extract to `handover/`, then import. |
+| `handover/` and `handover.zip` missing at import | Stop with instructions for the outgoing colleague. |
 | Slug collision at import | Never overwrite; surface and ask. |
 | Unknown `manifest.version` | Stop; ask the user to update the skill. |

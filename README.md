@@ -4,11 +4,9 @@
 
 **Project handover for Claude Code and Codex.**
 
-Export a short onboarding doc plus privacy-filtered AI project memories into the
-repo. The next developer imports them only after every memory is verified against
-the current code.
-
-**Onboarding that survives people leaving.**
+Export a short onboarding doc plus privacy-filtered AI project memories into a
+transferable zip. The next developer imports them only after every memory is
+verified against the current code.
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3B82F6.svg)](LICENSE)
 [![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20%2B%20Codex-D97757.svg)](https://claude.com/claude-code)
@@ -18,16 +16,7 @@ the current code.
 
 ---
 
-```mermaid
-flowchart LR
-  A["Outgoing developer"] --> B["export"]
-  B --> C["handover/"]
-  C --> D["ONBOARDING.md"]
-  C --> E["portable memories"]
-  D --> F["New developer"]
-  E --> G["verify against current code"]
-  G --> H["import into the new AI"]
-```
+![knowledge-transfer flow](assets/knowledge-transfer-flow.png)
 
 ## Why This Exists
 
@@ -38,20 +27,20 @@ When a developer leaves a project, two kinds of knowledge leave with them:
 | Human context | The next person gets scattered docs, stale notes, or a rushed call. |
 | AI context | The assistant starts from zero, even if another assistant learned the project over months of sessions. |
 
-`knowledge-transfer` packages both into a repo-local `handover/` folder: a short
-human onboarding document plus portable AI memories that are filtered on export
-and verified on import.
+`knowledge-transfer` packages both into `handover.zip`: a short human onboarding
+document plus portable AI memories that are filtered on export and verified on
+import.
 
 ## How It Works
 
 | Phase | Who runs it | What happens |
 |---|---|---|
-| `export` | The colleague leaving | Analyzes the project, reads project-scoped memories, filters private content, writes `handover/`. |
+| `export` | The colleague leaving | Analyzes the project, reads project-scoped memories, filters private content, writes `handover/` and `handover.zip`. |
 | `import` | The colleague joining | Reads the onboarding doc, verifies each memory against the current code, installs only the valid project knowledge. |
 
 Run without arguments, the skill detects the phase:
 
-- `handover/manifest.json` exists -> import
+- `handover/manifest.json` or `handover.zip` exists -> import
 - no `handover/` package -> export
 
 ## Install
@@ -109,10 +98,12 @@ In Codex:
 @knowledge-transfer export
 ```
 
-Review the proposed package, including the exclusion report, then commit
-`handover/` to the project repo.
+Review the proposed package, including the exclusion report, then send
+`handover.zip` to the next colleague.
 
 Joining a project:
+
+Place `handover.zip` in the project root, then run:
 
 ```text
 /knowledge-transfer:knowledge-transfer import
@@ -128,10 +119,11 @@ Read the onboarding doc first. The accepted memories are then installed through
 the current agent's memory mechanism; stale memories are fixed when obvious or
 discarded with a reason.
 
-## What Gets Committed
+## What Gets Created
 
 ```text
-handover/
+handover.zip              # transfer this file
+handover/                 # local staging folder used to build the zip
   ONBOARDING.md     # 600-1000 words, non-technical project map
   memories/         # neutral, portable project memories
   manifest.json     # export date, commit SHA, exported/excluded counts
@@ -142,6 +134,7 @@ handover/
 | `ONBOARDING.md` | A first-read project map: what it is, main pieces, key flows, where to start, gotchas. |
 | `memories/*.md` | Project facts, conventions, decisions, fragile flows, and commands worth preserving. |
 | `manifest.json` | Package version, export commit, language, and privacy-filter accounting. |
+| `handover.zip` | The transfer artifact to pass to the next person. It contains the full `handover/` folder. |
 
 ## Guarantees
 
@@ -149,7 +142,7 @@ handover/
 |---|---|
 | No personal memory export | `type: user` memories are never written to the package. |
 | Neutral project voice | Exported memories are rewritten without names, emails, usernames, or personal framing. |
-| Repo-contained handoff | The output is plain Markdown/JSON committed with the project. |
+| Transferable handoff | The output is a zip archive containing plain Markdown/JSON. |
 | Verified import | Every cited file, path, or identifier is checked against the current repo before installation. |
 | No blind overwrite | Existing memories are not overwritten silently on import. |
 
@@ -173,7 +166,7 @@ You can clone an unknown repo and ask an AI to explain it. The answer starts fro
 whatever is visible in the code today.
 
 `knowledge-transfer` flips the order: the outgoing context is packaged first,
-privacy-filtered, committed, then verified before the next assistant learns it.
+privacy-filtered, transferred, then verified before the next assistant learns it.
 The newcomer gets a short human map and an AI that already knows the project's
 important constraints.
 

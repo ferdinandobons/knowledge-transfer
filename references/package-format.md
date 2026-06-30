@@ -1,14 +1,35 @@
 # Handover package format
 
-The export phase writes this structure into the root of the target project:
+The export phase writes a local staging folder and a transfer archive into the
+root of the target project:
 
 ```
+handover.zip               # transfer artifact to send to the next colleague
 handover/
   ONBOARDING.md          # onboarding document (see onboarding-template.md)
   memories/
     <slug>.md            # one file per exported memory
   manifest.json          # export metadata
 ```
+
+`handover/` is a working folder created where the export runs. `handover.zip` is
+the artifact to pass to the next person. Do not commit either file by default;
+only commit them if the team explicitly decides to store handovers in the repo.
+
+The zip archive must contain the top-level `handover/` directory, not just its
+contents:
+
+```
+handover.zip
+└── handover/
+    ├── ONBOARDING.md
+    ├── manifest.json
+    └── memories/
+        └── <slug>.md
+```
+
+Adding the zip wrapper does not change `manifest.version`; the folder format
+inside the archive is still version `1`.
 
 ## manifest.json
 

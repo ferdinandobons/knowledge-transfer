@@ -1,7 +1,7 @@
 {
   "name": "knowledge-transfer",
   "version": "0.1.0",
-  "description": "AI-powered project handover for Claude Code and Codex: export a short onboarding doc plus privacy-filtered project memories into the repo, then verify and import them for the next developer.",
+  "description": "AI-powered project handover for Claude Code and Codex: export a short onboarding doc plus privacy-filtered project memories into handover.zip, then verify and import them for the next developer.",
   "author": {
     "name": "Ferdinando Bonsegna",
     "url": "https://github.com/ferdinandobons"
@@ -30,7 +30,7 @@
   "interface": {
     "displayName": "Knowledge Transfer",
     "shortDescription": "Project handover with verified AI memories",
-    "longDescription": "Export a short onboarding document plus privacy-filtered project memories into a handover package committed to the repo. Import verifies each memory against current code before the next developer's AI learns it.",
+    "longDescription": "Export a short onboarding document plus privacy-filtered project memories into handover.zip. Import verifies each memory against current code before the next developer's AI learns it.",
     "developerName": "Ferdinando Bonsegna",
     "category": "Productivity",
     "capabilities": ["Read", "Write"],

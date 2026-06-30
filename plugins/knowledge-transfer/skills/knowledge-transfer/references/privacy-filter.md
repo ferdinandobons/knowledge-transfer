@@ -1,8 +1,9 @@
 # Privacy filter for exported memories
 
-The handover package is committed to the team repo: anyone with repo access can read
-it. Apply this filter to EVERY memory before export. When in doubt, leave it out —
-an excluded memory costs a little context; a leaked personal detail costs trust.
+The handover package is a transferable zip archive: anyone who receives or forwards
+`handover.zip` can read it. Apply this filter to EVERY memory before export. When
+in doubt, leave it out — an excluded memory costs a little context; a leaked
+personal detail costs trust.
 
 ## Per-type rules
 

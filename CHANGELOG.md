@@ -18,9 +18,13 @@ All notable changes to this project are documented here. Format follows
 - Documented manual end-to-end test scenarios.
 - Claude Code native plugin install: `.claude-plugin/` manifests
   (`/plugin marketplace add ferdinandobons/knowledge-transfer`).
+- Transfer archive workflow: export creates `handover.zip` containing the
+  generated `handover/` folder.
 
 ### Changed
 - README rewritten: value proposition, core guarantee, at-a-glance table,
   Claude-native install commands first.
 - Skill wording generalized from Claude-only memories to agent project memories,
   while preserving the existing `handover/` package format.
+- Handover delivery changed from repo-commit guidance to a transferable zip
+  archive passed to the next colleague.
