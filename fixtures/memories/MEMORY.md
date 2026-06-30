@@ -1,4 +1,0 @@
-- [Marco's profile](marco-profile.md) — who Marco is, how he likes to work
-- [Atomic writes in store.js](atomic-writes-store.md) — never write recipes.json directly
-- [Smoke test before store changes](smoke-test-before-store-changes.md) — team convention
-- [Recipe schema reference](recipe-schema-reference.md) — where the schema is documented

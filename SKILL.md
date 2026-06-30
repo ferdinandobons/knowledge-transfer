@@ -1,21 +1,38 @@
 ---
 name: knowledge-transfer
-description: "Use when a colleague is leaving a project and must hand over knowledge, or when someone new joins a project that contains a handover/ folder. Two phases: export (analyze project + Claude memories, produce a committed handover package: non-technical onboarding doc + filtered portable memories) and import (verify those memories against current code, install them for the new colleague). Trigger on /knowledge-transfer, 'handover', 'knowledge transfer', 'passaggio di consegne', 'onboard a new colleague', or when the user mentions taking over / leaving a project."
-trigger: /knowledge-transfer
+description: "Use when a colleague is leaving a project and must hand over knowledge, or when someone new joins a project that contains a handover/ folder. Two phases: export (analyze project + agent project memories from Claude, Codex, or another assistant, then produce a committed handover package: non-technical onboarding doc + filtered portable memories) and import (verify those memories against current code, then install them through the current agent's memory mechanism). Trigger on /knowledge-transfer, /knowledge-transfer:knowledge-transfer, $knowledge-transfer, 'handover', 'knowledge transfer', 'passaggio di consegne', 'onboard a new colleague', or when the user mentions taking over / leaving a project."
 ---
 
-# /knowledge-transfer
+# knowledge-transfer
 
 Transfer project knowledge between colleagues: a short non-technical onboarding
 document plus the AI's accumulated project memories, packaged inside the project
-repo — so the newcomer starts oriented and their AI starts informed.
+repo so the newcomer starts oriented and their AI starts informed.
 
 ## Usage
+
+Claude Code standalone skill:
 
 ```
 /knowledge-transfer            # auto-detect mode (see below)
 /knowledge-transfer export     # outgoing colleague: build the handover package
 /knowledge-transfer import     # new colleague: verify + install memories, read the doc
+```
+
+Claude Code plugin install:
+
+```
+/knowledge-transfer:knowledge-transfer
+/knowledge-transfer:knowledge-transfer export
+/knowledge-transfer:knowledge-transfer import
+```
+
+Codex or another agent that reads `SKILL.md`:
+
+```
+$knowledge-transfer            # auto-detect mode
+$knowledge-transfer export     # outgoing colleague
+$knowledge-transfer import     # new colleague
 ```
 
 ## Mode detection (no argument)
@@ -32,6 +49,8 @@ Read these before producing anything:
 - `references/package-format.md` — package structure and manifest schema
 - `references/privacy-filter.md` — what may and may not be exported
 - `references/onboarding-template.md` — structure, tone, and length of the document
+- `references/agent-memory.md` — how to locate and install memories in Claude,
+  Codex, or another agent
 
 ---
 
@@ -41,7 +60,8 @@ Run from the project root by the colleague leaving the project.
 
 ### 1. Analyze the project
 
-- Read README, CLAUDE.md (if present), the top-level structure, entry points, and
+- Read README, agent guidance files (`CLAUDE.md`, `AGENTS.md`, `GEMINI.md`,
+  `.cursor/rules/`, etc. if present), the top-level structure, entry points, and
   main config files. Use subagents for large codebases rather than reading
   everything inline.
 - Identify: what the project does, the 3–7 main components, and 2–3 end-to-end
@@ -51,9 +71,10 @@ Run from the project root by the colleague leaving the project.
 
 ### 2. Read the memories
 
-- Your per-project memory directory path is given in your system prompt
-  (`~/.claude/projects/<project-slug>/memory/`).
-- Read `MEMORY.md` and every memory file in that directory.
+- Locate the current agent's project memory source using
+  `references/agent-memory.md`.
+- Read only memories scoped to this project or repo. Do not export global user
+  preferences or unrelated project history.
 - No memory directory or no memories → proceed with the document only, set
   `memories: {"exported": 0, "excluded": 0}` in the manifest, and tell the user the
   package contains no memories.
@@ -113,11 +134,14 @@ Run by the new colleague, from the project root, after cloning.
 
 ### 3. Install
 
-- Write each accepted memory into YOUR memory directory (path in your system
-  prompt), keeping the standard memory file format.
+- Install each accepted memory through the current agent's memory mechanism (see
+  `references/agent-memory.md`), keeping the portable memory content intact and
+  adapting only the storage wrapper/index if the target agent requires it.
 - Slug collision with an existing memory: do NOT overwrite. Report the collision
   and ask the user which to keep.
-- Append one index line per installed memory to `MEMORY.md` (create it if absent).
+- If the target memory store has an index file, append one index line per
+  installed memory (create it if absent). If the current agent forbids direct
+  memory writes, create or present the approved memory-update artifact instead.
 
 ### 4. Report
 

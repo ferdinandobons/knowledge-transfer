@@ -40,7 +40,9 @@ Field rules:
 
 ## memories/<slug>.md
 
-Same format as Claude Code per-project memory files:
+Portable Markdown memory format. It intentionally matches the simple frontmatter
+shape used by Claude Code memories and is easy for Codex or another agent to
+translate into its own memory-update mechanism:
 
 ```markdown
 ---
@@ -61,3 +63,5 @@ Constraints:
   exist in the project at export time.
 - `[[name]]` links between memories are allowed only if the target memory is also
   exported; otherwise remove the link syntax and keep plain text.
+- Importers may adapt the storage wrapper or index to Claude, Codex, or another
+  agent, but must preserve the verified project fact in the memory body.

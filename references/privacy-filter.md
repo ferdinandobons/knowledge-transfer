@@ -13,6 +13,11 @@ an excluded memory costs a little context; a leaked personal detail costs trust.
 | `reference` | Export, but verify each URL/pointer: team-accessible resources only. Personal dashboards, private gists, or links containing tokens are stripped or the memory is excluded. |
 | `feedback` | Export ONLY if it encodes project knowledge (constraints, conventions, gotchas, agreed workflows). Exclude if it encodes personal working style ("prefers short answers", "likes tables"). |
 
+Some agents do not label memories with these exact types. Map them conservatively:
+personal profile/preferences behave like `user`; durable repo facts behave like
+`project` or `reference`; prior correction about project workflow behaves like
+`feedback`.
+
 ## Rewrite pass (every exported memory)
 
 1. Remove names, emails, usernames, and any personal identifier.

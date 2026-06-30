@@ -1,7 +1,0 @@
-{
-  "name": "recipe-box",
-  "version": "1.0.0",
-  "description": "Tiny CLI recipe manager (knowledge-transfer test fixture)",
-  "main": "src/cli.js",
-  "license": "MIT"
-}

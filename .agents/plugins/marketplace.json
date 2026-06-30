@@ -1,0 +1,20 @@
+{
+  "name": "knowledge-transfer",
+  "interface": {
+    "displayName": "Knowledge Transfer"
+  },
+  "plugins": [
+    {
+      "name": "knowledge-transfer",
+      "source": {
+        "source": "local",
+        "path": "./plugins/knowledge-transfer"
+      },
+      "policy": {
+        "installation": "AVAILABLE",
+        "authentication": "ON_INSTALL"
+      },
+      "category": "Productivity"
+    }
+  ]
+}
