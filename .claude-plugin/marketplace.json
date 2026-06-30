@@ -5,7 +5,7 @@
   "plugins": [
     {
       "name": "knowledge-transfer",
-      "source": "./",
+      "source": "./plugins/knowledge-transfer",
       "description": "AI-powered project handover for Claude Code and Codex: export a short non-technical onboarding doc plus the AI's privacy-filtered project memories into handover.zip; the next developer imports them, verified against the current code.",
       "version": "0.1.0",
       "license": "MIT"

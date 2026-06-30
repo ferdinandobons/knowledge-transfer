@@ -176,9 +176,10 @@ important constraints.
 [TESTING.md](TESTING.md). The package format is versioned through
 `manifest.version`, so future import behavior can stay backward compatible.
 
-Claude Code packaging lives in `.claude-plugin/`. Codex marketplace packaging
-lives in `plugins/knowledge-transfer/`, with real files rather than symlinks so
-the installed Codex plugin cache is self-contained.
+Claude Code marketplace metadata lives in `.claude-plugin/` and points to the
+self-contained plugin in `plugins/knowledge-transfer/`. That plugin directory
+also contains the Codex marketplace package, with real files rather than
+symlinks so installed plugin caches are self-contained.
 
 ## License
 
