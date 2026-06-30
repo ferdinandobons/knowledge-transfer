@@ -1,88 +1,62 @@
 <div align="center">
 
-# knowledge-transfer: AI-Powered Project Handover for Claude Code and Codex
+# knowledge-transfer
 
-**knowledge-transfer is an agent skill that hands a project over from one developer to the next, including what the AI learned along the way.** Unlike wiki pages that go stale or an unstructured Q&A with an AI that has never seen the project, it produces a short onboarding document the newcomer reads over one coffee, and transfers the outgoing developer's project memories from Claude, Codex, or another assistant: privacy-filtered on the way out, verified against the current code on the way in.
+**Project handover for Claude Code and Codex.**
+
+Export a short onboarding doc plus privacy-filtered AI project memories into the
+repo. The next developer imports them only after every memory is verified against
+the current code.
+
+**Onboarding that survives people leaving.**
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-3B82F6.svg)](LICENSE)
 [![Works with](https://img.shields.io/badge/works%20with-Claude%20Code%20%2B%20Codex-D97757.svg)](https://claude.com/claude-code)
-[![Type](https://img.shields.io/badge/type-agent%20skill-6EA8FE.svg)](SKILL.md)
-[![Dependencies](https://img.shields.io/badge/dependencies-zero-16A34A.svg)](#install)
 [![Status: beta](https://img.shields.io/badge/status-beta-F59E0B.svg)](#project-status)
 
 </div>
 
 ---
 
-## What is knowledge-transfer?
+```mermaid
+flowchart LR
+  A["Outgoing developer"] --> B["export"]
+  B --> C["handover/"]
+  C --> D["ONBOARDING.md"]
+  C --> E["portable memories"]
+  D --> F["New developer"]
+  E --> G["verify against current code"]
+  G --> H["import into the new AI"]
+```
 
-When a developer leaves a project, two kinds of knowledge walk out the door: the human kind (what the pieces are, how work flows, what to watch out for) and the AI kind (the project memories built up across months of agent sessions: the gotchas, the conventions, the decisions that never made it into code). The replacement inherits neither. They get a repo, a "good luck", and an AI assistant that knows nothing about the project.
+## Why This Exists
 
-**knowledge-transfer** packages both kinds of knowledge into a `handover/` folder that is committed to the repo and travels with it. The next developer starts oriented, and their AI starts informed.
+When a developer leaves a project, two kinds of knowledge leave with them:
 
-> **The core guarantee: nothing personal leaves the machine, and nothing stale enters yours.** Memories about the person are never exported, every exported memory is rewritten in neutral voice, and the import re-verifies each one against the current code, file by file, before the new developer's AI learns it.
-
-### What are AI memories?
-
-AI memories are the durable notes an assistant builds while working with a developer
-across many sessions. They are not a chat transcript. They are the compressed
-project knowledge that keeps being useful later: architecture decisions, local
-conventions, fragile flows, commands that actually work, files to avoid touching
-casually, and the reasons behind choices that may never have been written into the
-README.
-
-Over time, those memories become part of the project's working context. Some are
-captured deliberately; others emerge indirectly from repeated fixes, reviews, and
-debugging sessions. Losing them and starting from zero means losing the context a
-colleague built up while doing the work: not just what is in their head, but the
-project understanding their AI learned alongside them.
-
-### At a glance
-
-| Question | Answer |
+| Knowledge | What usually happens |
 |---|---|
-| **Input** | The project (code, docs, agent guidance files) + the outgoing developer's project memories |
-| **Output** | `handover/` in the repo: a 1-2 page non-technical `ONBOARDING.md`, portable memories, a manifest with the export commit |
-| **Works with** | Claude Code and Codex; manual install also works for agents that read `SKILL.md` |
-| **Best for** | Offboarding, onboarding, rotating maintainers, agency-to-client handoffs |
-| **Privacy model** | Personal memories (`type: user`) never leave the machine; every exclusion is counted in the manifest, so filtering is visible |
-| **Cost of adoption** | Zero dependencies, zero config, zero code: a pure prompt skill, markdown all the way down |
+| Human context | The next person gets scattered docs, stale notes, or a rushed call. |
+| AI context | The assistant starts from zero, even if another assistant learned the project over months of sessions. |
 
----
+`knowledge-transfer` packages both into a repo-local `handover/` folder: a short
+human onboarding document plus portable AI memories that are filtered on export
+and verified on import.
 
-## Why not just ask the AI?
-
-You can clone an unknown project and ask an AI to "explain everything". What you get is an unstructured tour, generated from scratch, by an assistant that can only see what is written in the code. It cannot tell you that `recipes.json` once got corrupted by a direct write, that the team smoke-tests the store by hand before every commit, or why that one module must never be touched on Fridays. Those facts lived in your colleague's head and in their AI's memory.
-
-knowledge-transfer flips the order. Orientation arrives structured: one short document that names the main pieces and narrates how work flows, written for a human to read first. Technical depth arrives as memories: installed into the new developer's own AI, pre-verified, ready the first time they ask a real question.
-
----
-
-## The two phases
+## How It Works
 
 | Phase | Who runs it | What happens |
 |---|---|---|
-| **`/knowledge-transfer export`**, **`/knowledge-transfer:knowledge-transfer export`**, or **`$knowledge-transfer export`** | The developer leaving | Analyzes the project, reads project memories from the current agent, filters them ([strict rules](references/privacy-filter.md)), writes `handover/` into the repo |
-| **`/knowledge-transfer import`**, **`/knowledge-transfer:knowledge-transfer import`**, or **`$knowledge-transfer import`** | The developer arriving | Verifies every memory against the *current* code (renamed files? changed areas since the export commit?), installs the valid ones through the current agent's memory mechanism, presents the onboarding doc |
+| `export` | The colleague leaving | Analyzes the project, reads project-scoped memories, filters private content, writes `handover/`. |
+| `import` | The colleague joining | Reads the onboarding doc, verifies each memory against the current code, installs only the valid project knowledge. |
 
-Run without arguments, the skill detects which side of the handover you are on: `handover/` present means import, absent means export.
+Run without arguments, the skill detects the phase:
 
-What the export writes:
-
-```
-handover/
-  ONBOARDING.md     # 1-2 pages, non-technical: the main pieces + how work flows
-  memories/         # portable, filtered, neutral-voice memories
-  manifest.json     # export date, commit SHA, exported/excluded counts
-```
-
-Commit it, and the handover travels with the repo. No server, no service, no export to lose in a Slack thread.
-
----
+- `handover/manifest.json` exists -> import
+- no `handover/` package -> export
 
 ## Install
 
-### Claude Code — fastest path
+### Claude Code
 
 From inside Claude Code:
 
@@ -92,10 +66,14 @@ From inside Claude Code:
 /reload-plugins
 ```
 
-Plugin-installed skills are namespaced, so invoke it as
-`/knowledge-transfer:knowledge-transfer`.
+Plugin-installed skills are namespaced:
 
-### Codex — fastest path
+```text
+/knowledge-transfer:knowledge-transfer export
+/knowledge-transfer:knowledge-transfer import
+```
+
+### Codex
 
 From your terminal:
 
@@ -104,59 +82,111 @@ codex plugin marketplace add ferdinandobons/knowledge-transfer --ref main
 codex plugin add knowledge-transfer@knowledge-transfer
 ```
 
-Start a new Codex thread, then invoke the plugin explicitly:
+Start a new Codex thread, then invoke the plugin:
 
 ```text
 @knowledge-transfer export
 @knowledge-transfer import
 ```
 
-### Manual raw skill
+### Raw Skill
 
 Agents that only read raw `SKILL.md` folders can use this repo's `SKILL.md` plus
 `references/` in a clean skill directory. Prefer the plugin install above for
 Claude Code and Codex.
 
----
+## Quick Start
 
-## Quick start
-
-**Leaving a project?** From the project root:
+Leaving a project:
 
 ```text
 /knowledge-transfer:knowledge-transfer export
-# or, in Codex:
+```
+
+In Codex:
+
+```text
 @knowledge-transfer export
 ```
 
-Review the package it proposes (the exclusion report shows exactly what was filtered out and why), then commit `handover/`.
+Review the proposed package, including the exclusion report, then commit
+`handover/` to the project repo.
 
-**Joining one?** Clone the project, then:
+Joining a project:
 
 ```text
 /knowledge-transfer:knowledge-transfer import
-# or, in Codex:
+```
+
+In Codex:
+
+```text
 @knowledge-transfer import
 ```
 
-Read the onboarding doc, and let your AI absorb the verified memories. Stale ones are updated when the fix is obvious, discarded with a one-line reason when it is not. Your existing memories are never overwritten.
+Read the onboarding doc first. The accepted memories are then installed through
+the current agent's memory mechanism; stale memories are fixed when obvious or
+discarded with a reason.
 
----
+## What Gets Committed
 
-## Project status
+```text
+handover/
+  ONBOARDING.md     # 600-1000 words, non-technical project map
+  memories/         # neutral, portable project memories
+  manifest.json     # export date, commit SHA, exported/excluded counts
+```
 
-**Beta.** The skill is young and prompt-driven, with a manual validation checklist
-for export/import behavior, privacy filtering, document length, manifest integrity,
-and memory installation (see [TESTING.md](TESTING.md)). The package format is
-versioned (`manifest.version`), so future changes stay backward compatible.
-Claude Code uses `.claude-plugin/plugin.json` and `.claude-plugin/marketplace.json`.
-Codex uses `.agents/plugins/marketplace.json` for `codex plugin marketplace add`,
-`plugins/knowledge-transfer` as the marketplace plugin path,
-`plugins/knowledge-transfer/.codex-plugin/plugin.json` for plugin packaging, and
-`plugins/knowledge-transfer/skills/knowledge-transfer/agents/openai.yaml` for
-skill UI metadata. The Codex plugin directory intentionally contains real files,
-not symlinks, so the installed plugin cache is self-contained.
+| File | Purpose |
+|---|---|
+| `ONBOARDING.md` | A first-read project map: what it is, main pieces, key flows, where to start, gotchas. |
+| `memories/*.md` | Project facts, conventions, decisions, fragile flows, and commands worth preserving. |
+| `manifest.json` | Package version, export commit, language, and privacy-filter accounting. |
+
+## Guarantees
+
+| Guarantee | How the skill enforces it |
+|---|---|
+| No personal memory export | `type: user` memories are never written to the package. |
+| Neutral project voice | Exported memories are rewritten without names, emails, usernames, or personal framing. |
+| Repo-contained handoff | The output is plain Markdown/JSON committed with the project. |
+| Verified import | Every cited file, path, or identifier is checked against the current repo before installation. |
+| No blind overwrite | Existing memories are not overwritten silently on import. |
+
+## What Are AI Memories?
+
+AI memories are durable notes an assistant builds while working with a developer
+across many sessions. They are not a chat transcript. They are compressed project
+knowledge that stays useful later: architecture decisions, local conventions,
+fragile flows, commands that actually work, files to avoid touching casually, and
+the reasons behind choices that may never have reached the README.
+
+Over time, those memories become part of the project's working context. Some are
+captured deliberately; others emerge indirectly from repeated fixes, reviews, and
+debugging sessions. Losing them and starting from zero means losing the context a
+colleague built while doing the work, including the project understanding their AI
+learned alongside them.
+
+## Why Not Just Ask The AI?
+
+You can clone an unknown repo and ask an AI to explain it. The answer starts from
+whatever is visible in the code today.
+
+`knowledge-transfer` flips the order: the outgoing context is packaged first,
+privacy-filtered, committed, then verified before the next assistant learns it.
+The newcomer gets a short human map and an AI that already knows the project's
+important constraints.
+
+## Project Status
+
+**Beta.** The skill is prompt-driven and validated with the manual checklist in
+[TESTING.md](TESTING.md). The package format is versioned through
+`manifest.version`, so future import behavior can stay backward compatible.
+
+Claude Code packaging lives in `.claude-plugin/`. Codex marketplace packaging
+lives in `plugins/knowledge-transfer/`, with real files rather than symlinks so
+the installed Codex plugin cache is self-contained.
 
 ## License
 
-[MIT](LICENSE) © 2026 Ferdinando Bonsegna
+[MIT](LICENSE) (c) 2026 Ferdinando Bonsegna
