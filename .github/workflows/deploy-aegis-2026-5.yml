@@ -1,0 +1,70 @@
+name: Deploy Aegis 2026.5 to Vercel
+
+on:
+  push:
+    branches:
+      - aegis-course-2026-5
+    paths:
+      - 'aegis-deploy-2026-5/**'
+      - '.github/workflows/deploy-aegis-2026-5.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN || secrets.VERCEL_ACCESS_TOKEN }}
+      VERCEL_ORG_ID: team_zMdbBDCBB4CjRrlXy4mpy71T
+      VERCEL_PROJECT_ID: prj_sqm4jaka9qF6dHarS7l4daIJvbvy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Rebuild deployment bundle
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat aegis-deploy-2026-5/chunk_00.txt \
+              aegis-deploy-2026-5/chunk_01.txt \
+              aegis-deploy-2026-5/chunk_02.txt \
+              aegis-deploy-2026-5/chunk_03.txt > bundle.b64
+          base64 --decode bundle.b64 > bundle.zip
+          echo '6055325cf966d0979b078f09e0520097ecaaf50bb82257eb16bea0503d3f61e3  bundle.zip' | sha256sum --check --strict
+          mkdir -p site
+          unzip -q bundle.zip -d site
+
+      - name: Prepare linked Vercel project
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p site/.vercel
+          cat > site/.vercel/project.json <<'JSON'
+          {
+            "projectId": "prj_sqm4jaka9qF6dHarS7l4daIJvbvy",
+            "orgId": "team_zMdbBDCBB4CjRrlXy4mpy71T"
+          }
+          JSON
+          cat > site/build.js <<'JS'
+          const fs = require('fs');
+          fs.mkdirSync('public', { recursive: true });
+          for (const file of ['app.js', 'data.js', 'styles.css']) {
+            fs.copyFileSync(file, `public/${file}`);
+          }
+          JS
+
+      - name: Check Vercel credentials
+        shell: bash
+        run: |
+          if [ -z "${VERCEL_TOKEN:-}" ]; then
+            echo 'VERCEL_TOKEN or VERCEL_ACCESS_TOKEN is not configured in GitHub Actions secrets.' >&2
+            exit 2
+          fi
+
+      - name: Deploy production
+        shell: bash
+        run: |
+          set -euo pipefail
+          npx --yes vercel@latest deploy --prod --yes --cwd site --scope 730-ad29 --token "$VERCEL_TOKEN"
