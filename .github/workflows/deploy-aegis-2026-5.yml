@@ -7,6 +7,12 @@ on:
     paths:
       - 'aegis-deploy-2026-5/**'
       - '.github/workflows/deploy-aegis-2026-5.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'aegis-deploy-2026-5/**'
+      - '.github/workflows/deploy-aegis-2026-5.yml'
   workflow_dispatch:
 
 permissions:
